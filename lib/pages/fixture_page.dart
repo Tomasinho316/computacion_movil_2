@@ -30,7 +30,7 @@ class FixturePage extends StatelessWidget {
       'equipoB': 'Brasil',
       'banderaB': 'assets/brasil.png',
       'estadio': 'Estadio Monumental',
-      'resultado': null // Futuro partido
+      'resultado': null
     },
     {
       'fecha': '27 JUL 2024',
@@ -40,7 +40,7 @@ class FixturePage extends StatelessWidget {
       'equipoB': 'Paraguay',
       'banderaB': 'assets/paraguay.png',
       'estadio': 'Estadio La Granja',
-      'resultado': null // Futuro partido
+      'resultado': null
     },
   ];
 
@@ -50,52 +50,68 @@ class FixturePage extends StatelessWidget {
       backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         title: Text('Fixture 2024'),
-        backgroundColor: const Color(0xFF00134A), // Azul institucional
-        foregroundColor: Colors.white, // Texto e íconos en blanco
-        ),
+        backgroundColor: const Color(0xFF00134A),
+        foregroundColor: Colors.white,
+      ),
       body: ListView.builder(
         itemCount: partidos.length,
         padding: EdgeInsets.all(16),
         itemBuilder: (context, index) {
           final partido = partidos[index];
-          return Card(
-            color: Colors.white,
-            margin: EdgeInsets.only(bottom: 16),
-            elevation: 4,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${partido['fecha']} · ${partido['hora']}',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+          return GestureDetector(
+            onTap: () {
+              final jugado = partido['resultado'] != null;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    jugado
+                        ? 'Este partido ya se jugó.'
+                        : 'Este partido aún no se ha jugado.',
                   ),
-                  SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _equipoConBandera(partido['equipoA'], partido['banderaA']),
-                      Text(
-                        partido['resultado'] ?? 'vs',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: partido['resultado'] != null
-                              ? const Color(0xFFAE0A26) // rojo institucional
-                              : Colors.black,
+                  backgroundColor: jugado ? Colors.green[700] : Colors.orange[700],
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            child: Card(
+              color: Colors.white,
+              margin: EdgeInsets.only(bottom: 16),
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${partido['fecha']} · ${partido['hora']}',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    ),
+                    SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _equipoConBandera(partido['equipoA'], partido['banderaA']),
+                        Text(
+                          partido['resultado'] ?? 'vs',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: partido['resultado'] != null
+                                ? const Color(0xFFAE0A26)
+                                : Colors.black,
+                          ),
                         ),
-                      ),
-                      _equipoConBandera(partido['equipoB'], partido['banderaB']),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    partido['estadio'],
-                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                  ),
-                ],
+                        _equipoConBandera(partido['equipoB'], partido['banderaB']),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      partido['estadio'],
+                      style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
